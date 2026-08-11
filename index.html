@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SmartClass IoT</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            <div class="logo-icon">SC</div>
+
+            <div>
+                <h2>SmartClass</h2>
+                <span>IoT Monitor</span>
+            </div>
+        </div>
+
+        <nav>
+            <a class="active">
+                <span>▣</span>
+                Dashboard
+            </a>
+
+            <a>
+                <span>◉</span>
+                Monitoramento
+            </a>
+
+            <a>
+                <span>⚠</span>
+                Alertas
+            </a>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <span>Projeto SENAI</span>
+            <small>SmartClass IoT • 2026</small>
+        </div>
+
+    </aside>
+
+
+    <main class="main">
+
+        <header class="topbar">
+
+            <div>
+                <p class="breadcrumb">IoT / Dashboard</p>
+                <h1>Monitoramento da Sala</h1>
+                <p class="subtitle">
+                    Acompanhe as condições do ambiente em tempo real.
+                </p>
+            </div>
+
+            <div class="connection-area">
+
+                <div id="connectionStatus" class="connection disconnected">
+                    <span class="status-dot"></span>
+                    Arduino desconectado
+                </div>
+
+                <button id="connectButton" class="connect-button">
+                    Conectar Arduino
+                </button>
+
+            </div>
+
+        </header>
+
+
+        <section class="dashboard">
+
+
+            <div class="status-banner normal" id="statusBanner">
+
+                <div class="status-icon" id="statusIcon">
+                    ✓
+                </div>
+
+                <div>
+                    <strong id="statusTitle">
+                        Ambiente normal
+                    </strong>
+
+                    <p id="statusDescription">
+                        Todas as condições estão dentro dos limites.
+                    </p>
+                </div>
+
+            </div>
+
+
+            <section class="cards">
+
+
+                <article class="card">
+
+                    <div class="card-top">
+
+                        <div class="sensor-icon temperature">
+                            🌡
+                        </div>
+
+                        <span class="card-label">
+                            TEMPERATURA
+                        </span>
+
+                    </div>
+
+                    <div class="value">
+                        <span id="temperature">--</span>
+                        <small>°C</small>
+                    </div>
+
+                    <div class="card-bottom">
+                        <span>Limite de alerta</span>
+                        <strong>28 °C</strong>
+                    </div>
+
+                </article>
+
+
+                <article class="card">
+
+                    <div class="card-top">
+
+                        <div class="sensor-icon humidity">
+                            💧
+                        </div>
+
+                        <span class="card-label">
+                            UMIDADE
+                        </span>
+
+                    </div>
+
+                    <div class="value">
+                        <span id="humidity">--</span>
+                        <small>%</small>
+                    </div>
+
+                    <div class="card-bottom">
+                        <span>Limite de alerta</span>
+                        <strong>70%</strong>
+                    </div>
+
+                </article>
+
+
+                <article class="card">
+
+                    <div class="card-top">
+
+                        <div class="sensor-icon light">
+                            ☀
+                        </div>
+
+                        <span class="card-label">
+                            LUMINOSIDADE
+                        </span>
+
+                    </div>
+
+                    <div class="value">
+                        <span id="light">--</span>
+                        <small>ADC</small>
+                    </div>
+
+                    <div class="card-bottom">
+                        <span>Limite de alerta</span>
+                        <strong>350</strong>
+                    </div>
+
+                </article>
+
+
+            </section>
+
+
+            <section class="charts">
+
+
+                <article class="chart-card">
+
+                    <div class="chart-header">
+                        <div>
+                            <h3>Temperatura</h3>
+                            <span>Histórico das últimas leituras</span>
+                        </div>
+
+                        <span class="chart-unit">°C</span>
+                    </div>
+
+                    <div class="chart-container">
+                        <canvas id="temperatureChart"></canvas>
+                    </div>
+
+                </article>
+
+
+                <article class="chart-card">
+
+                    <div class="chart-header">
+                        <div>
+                            <h3>Umidade</h3>
+                            <span>Histórico das últimas leituras</span>
+                        </div>
+
+                        <span class="chart-unit">%</span>
+                    </div>
+
+                    <div class="chart-container">
+                        <canvas id="humidityChart"></canvas>
+                    </div>
+
+                </article>
+
+
+                <article class="chart-card">
+
+                    <div class="chart-header">
+                        <div>
+                            <h3>Luminosidade</h3>
+                            <span>Histórico das últimas leituras</span>
+                        </div>
+
+                        <span class="chart-unit">ADC</span>
+                    </div>
+
+                    <div class="chart-container">
+                        <canvas id="lightChart"></canvas>
+                    </div>
+
+                </article>
+
+
+            </section>
+
+
+            <section class="information">
+
+
+                <article class="info-card">
+
+                    <div class="info-title">
+                        <span>●</span>
+                        Sistema
+                    </div>
+
+                    <div class="info-row">
+                        <span>Conexão</span>
+                        <strong id="systemConnection">
+                            Desconectado
+                        </strong>
+                    </div>
+
+                    <div class="info-row">
+                        <span>Baud rate</span>
+                        <strong>9600</strong>
+                    </div>
+
+                    <div class="info-row">
+                        <span>Intervalo</span>
+                        <strong>2 segundos</strong>
+                    </div>
+
+                </article>
+
+
+                <article class="info-card">
+
+                    <div class="info-title">
+                        <span>◷</span>
+                        Última atualização
+                    </div>
+
+                    <div class="last-update" id="lastUpdate">
+                        Aguardando dados...
+                    </div>
+
+                </article>
+
+
+                <article class="info-card">
+
+                    <div class="info-title">
+                        <span>⚠</span>
+                        Alertas
+                    </div>
+
+                    <div class="alert-count">
+                        <strong id="alertCount">0</strong>
+                        <span>alertas registrados</span>
+                    </div>
+
+                </article>
+
+
+            </section>
+
+
+        </section>
+
+
+        <footer>
+
+            <span>
+                SmartClass IoT
+            </span>
+
+            <span>
+                Monitoramento inteligente de sala de aula
+            </span>
+
+        </footer>
+
+    </main>
+
+
+    <script src="script.js"></script>
+
+</body>
+</html>
