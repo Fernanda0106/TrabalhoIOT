@@ -12,10 +12,7 @@
 
     <title>SmartClass IoT - Alertas</title>
 
-    <link
-        rel="stylesheet"
-        href="style.css"
-    >
+    <link rel="stylesheet" href="style.css">
 
 </head>
 
@@ -23,7 +20,7 @@
 <body>
 
 
-    <!-- MENU LATERAL -->
+    <!-- MENU -->
 
     <aside class="sidebar">
 
@@ -34,15 +31,8 @@
             </div>
 
             <div>
-
-                <h2>
-                    SmartClass
-                </h2>
-
-                <span>
-                    IoT Monitor
-                </span>
-
+                <h2>SmartClass</h2>
+                <span>IoT Monitor</span>
             </div>
 
         </div>
@@ -95,12 +85,10 @@
 
 
 
-    <!-- CONTEÚDO PRINCIPAL -->
+    <!-- CONTEÚDO -->
 
     <main class="main">
 
-
-        <!-- CABEÇALHO -->
 
         <header class="topbar">
 
@@ -110,11 +98,9 @@
                     IoT / Alertas
                 </p>
 
-
                 <h1>
                     Alertas do ambiente
                 </h1>
-
 
                 <p class="subtitle">
                     Acompanhe condições que ultrapassarem os limites.
@@ -125,7 +111,10 @@
 
             <div class="connection-area">
 
-                <div class="connection">
+                <div
+                    class="connection"
+                    id="connectionStatus"
+                >
 
                     <span class="status-dot"></span>
 
@@ -134,29 +123,54 @@
                 </div>
 
 
-                <a
+                <button
                     class="connect-button"
-                    href="index.html"
+                    id="connectArduino"
                 >
-                    Voltar ao Dashboard
-                </a>
+                    🔌 Conectar Arduino
+                </button>
 
             </div>
 
         </header>
 
 
-
-        <!-- ÁREA DE ALERTAS -->
-
         <section class="dashboard">
 
 
-            <!-- RESUMO DOS ALERTAS -->
+            <div class="section-heading">
+
+                <div>
+
+                    <h2>
+                        Alertas do ambiente
+                    </h2>
+
+                    <p>
+                        Registros gerados quando uma condição sai do limite definido.
+                    </p>
+
+                </div>
+
+
+                <button
+                    id="clearAlerts"
+                    class="secondary-button"
+                >
+                    Limpar histórico
+                </button>
+
+            </div>
+
+
+            <!-- RESUMO -->
 
             <div class="alert-summary">
 
-                <div class="alert-summary-number">
+                <div
+                    class="alert-summary-number"
+                    id="totalAlerts"
+                >
                     0
                 </div>
 
@@ -167,9 +181,8 @@
                         Alertas registrados
                     </strong>
 
-
                     <p>
-                        Nenhum alerta registrado até o momento.
+                        Os alertas ficam armazenados enquanto a página estiver aberta.
                     </p>
 
                 </div>
@@ -177,25 +190,28 @@
             </div>
 
 
+            <!-- LISTA -->
 
-            <!-- LISTA DE ALERTAS -->
+            <div
+                id="alertsList"
+                class="alerts-list"
+            >
 
-            <div class="empty-alerts">
+                <div class="empty-alerts">
 
-                <div>
-                    ✓
+                    <div>
+                        ✓
+                    </div>
+
+                    <strong>
+                        Nenhum alerta registrado
+                    </strong>
+
+                    <p>
+                        Quando temperatura, umidade ou luminosidade ultrapassarem o limite, o alerta aparecerá aqui.
+                    </p>
+
                 </div>
-
-
-                <strong>
-                    Nenhum alerta registrado
-                </strong>
-
-
-                <p>
-                    Quando temperatura, umidade ou luminosidade
-                    ultrapassarem o limite, o alerta aparecerá aqui.
-                </p>
 
             </div>
 
@@ -204,6 +220,8 @@
 
     </main>
 
+
+    <script src="script.js"></script>
 
 </body>
 

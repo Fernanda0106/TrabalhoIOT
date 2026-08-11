@@ -1,306 +1,189 @@
-const connectButton =
-    document.getElementById("connectButton");
+let portaSerial = null;
+let leitor = null;
 
-const connectionStatus =
-    document.getElementById("connectionStatus");
+let temperaturaAtual = null;
+let umidadeAtual = null;
+let luminosidadeAtual = null;
 
-const systemConnection =
-    document.getElementById("systemConnection");
-
-const temperatureElement =
-    document.getElementById("temperature");
-
-const humidityElement =
-    document.getElementById("humidity");
-
-const lightElement =
-    document.getElementById("light");
-
-const statusBanner =
-    document.getElementById("statusBanner");
-
-const statusIcon =
-    document.getElementById("statusIcon");
-
-const statusTitle =
-    document.getElementById("statusTitle");
-
-const statusDescription =
-    document.getElementById("statusDescription");
-
-const lastUpdate =
-    document.getElementById("lastUpdate");
-
-const alertCountElement =
-    document.getElementById("alertCount");
+let quantidadeAlertas = 0;
 
 
-let alertCount = 0;
+// ================================
+// ELEMENTOS DA PÁGINA
+// ================================
 
-const maxPoints = 20;
+const botaoConectar = document.getElementById("connectArduino");
 
-const labels = [];
+const statusConexao = document.getElementById("connectionStatus");
 
-const temperatureData = [];
-const humidityData = [];
-const lightData = [];
+const temperaturaElemento =
+    document.getElementById("temperatura");
+
+const umidadeElemento =
+    document.getElementById("umidade");
+
+const luminosidadeElemento =
+    document.getElementById("luminosidade");
+
+const communicationStatus =
+    document.getElementById("communicationStatus");
 
 
-/* GRÁFICO DE TEMPERATURA */
+// ================================
+// BOTÃO CONECTAR
+// ================================
 
-const temperatureChart =
-    new Chart(
-        document
-            .getElementById("temperatureChart"),
-        {
-            type: "line",
+if (botaoConectar) {
 
-            data: {
-                labels: labels,
-
-                datasets: [
-                    {
-                        label: "Temperatura",
-
-                        data: temperatureData,
-
-                        borderColor: "#2563eb",
-
-                        backgroundColor:
-                            "rgba(37, 99, 235, 0.10)",
-
-                        fill: true,
-
-                        tension: 0.4,
-
-                        pointRadius: 2
-                    }
-                ]
-            },
-
-            options: {
-                responsive: true,
-
-                maintainAspectRatio: false,
-
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                },
-
-                scales: {
-                    y: {
-                        beginAtZero: false
-                    }
-                }
-            }
-        }
+    botaoConectar.addEventListener(
+        "click",
+        conectarArduino
     );
 
-
-/* GRÁFICO DE UMIDADE */
-
-const humidityChart =
-    new Chart(
-        document
-            .getElementById("humidityChart"),
-        {
-            type: "line",
-
-            data: {
-                labels: labels,
-
-                datasets: [
-                    {
-                        label: "Umidade",
-
-                        data: humidityData,
-
-                        borderColor: "#0891b2",
-
-                        backgroundColor:
-                            "rgba(8, 145, 178, 0.10)",
-
-                        fill: true,
-
-                        tension: 0.4,
-
-                        pointRadius: 2
-                    }
-                ]
-            },
-
-            options: {
-                responsive: true,
-
-                maintainAspectRatio: false,
-
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                },
-
-                scales: {
-                    y: {
-                        beginAtZero: false
-                    }
-                }
-            }
-        }
-    );
+}
 
 
-/* GRÁFICO DE LUMINOSIDADE */
+// ================================
+// CONECTAR ARDUINO
+// ================================
 
-const lightChart =
-    new Chart(
-        document
-            .getElementById("lightChart"),
-        {
-            type: "line",
+async function conectarArduino() {
 
-            data: {
-                labels: labels,
+    if (!("serial" in navigator)) {
 
-                datasets: [
-                    {
-                        label: "Luminosidade",
+        alert(
+            "Seu navegador não suporta conexão serial. Use o Google Chrome ou Microsoft Edge."
+        );
 
-                        data: lightData,
-
-                        borderColor: "#d97706",
-
-                        backgroundColor:
-                            "rgba(217, 119, 6, 0.10)",
-
-                        fill: true,
-
-                        tension: 0.4,
-
-                        pointRadius: 2
-                    }
-                ]
-            },
-
-            options: {
-                responsive: true,
-
-                maintainAspectRatio: false,
-
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                },
-
-                scales: {
-                    y: {
-                        beginAtZero: true,
-
-                        max: 1023
-                    }
-                }
-            }
-        }
-    );
+        return;
+    }
 
 
-/* CONECTAR ARDUINO */
+    try {
 
-connectButton.addEventListener(
-    "click",
-    async () => {
+        // Abre a janela para escolher a porta
+        portaSerial =
+            await navigator.serial.requestPort();
 
-        if (!("serial" in navigator)) {
 
-            alert(
-                "Seu navegador não suporta Web Serial. Use Google Chrome ou Microsoft Edge."
-            );
+        // Abre a comunicação serial
+        await portaSerial.open({
+            baudRate: 9600
+        });
 
-            return;
+
+        atualizarStatusConexao(true);
+
+
+        console.log("Arduino conectado.");
+
+
+        iniciarLeitura();
+
+
+    } catch (erro) {
+
+        console.error(
+            "Erro ao conectar ao Arduino:",
+            erro
+        );
+
+        atualizarStatusConexao(false);
+
+    }
+
+}
+
+
+// ================================
+// STATUS DA CONEXÃO
+// ================================
+
+function atualizarStatusConexao(conectado) {
+
+    if (!statusConexao) {
+        return;
+    }
+
+
+    if (conectado) {
+
+        statusConexao.innerHTML =
+            '<span class="status-dot"></span> Arduino conectado';
+
+
+        statusConexao.classList.add("connected");
+
+
+        if (botaoConectar) {
+
+            botaoConectar.textContent =
+                "🟢 Arduino conectado";
+
         }
 
 
-        try {
+        if (communicationStatus) {
 
-            const port =
-                await navigator
-                    .serial
-                    .requestPort();
-
-
-            await port.open({
-                baudRate: 9600
-            });
-
-
-            connectionStatus
-                .classList
-                .remove("disconnected");
-
-            connectionStatus
-                .classList
-                .add("connected");
-
-            connectionStatus
-                .innerHTML =
-                '<span class="status-dot"></span>' +
-                'Arduino conectado';
-
-
-            systemConnection.textContent =
+            communicationStatus.textContent =
                 "Conectado";
 
+        }
 
-            connectButton.textContent =
-                "Arduino conectado";
+    } else {
+
+        statusConexao.innerHTML =
+            '<span class="status-dot"></span> Arduino desconectado';
 
 
-            connectButton.disabled = true;
+        statusConexao.classList.remove("connected");
 
 
-            await readSerial(port);
+        if (botaoConectar) {
+
+            botaoConectar.textContent =
+                "🔌 Conectar Arduino";
 
         }
 
-        catch (error) {
 
-            console.error(error);
+        if (communicationStatus) {
 
-            alert(
-                "Não foi possível conectar ao Arduino."
-            );
+            communicationStatus.textContent =
+                "Desconectado";
 
         }
 
     }
-);
+
+}
 
 
-/* LER PORTA SERIAL */
+// ================================
+// LER DADOS DO ARDUINO
+// ================================
 
-async function readSerial(port) {
+async function iniciarLeitura() {
+
+    if (!portaSerial) {
+        return;
+    }
+
 
     const decoder =
         new TextDecoderStream();
 
 
-    const readableStreamClosed =
-        port.readable
-            .pipeTo(
-                decoder.writable
-            );
+    portaSerial.readable.pipeTo(
+        decoder.writable
+    );
 
 
-    const reader =
-        decoder
-            .readable
-            .getReader();
+    leitor =
+        decoder.readable.getReader();
 
 
-    let buffer = "";
+    let textoRecebido = "";
 
 
     try {
@@ -310,8 +193,7 @@ async function readSerial(port) {
             const {
                 value,
                 done
-            } =
-                await reader.read();
+            } = await leitor.read();
 
 
             if (done) {
@@ -319,348 +201,329 @@ async function readSerial(port) {
             }
 
 
-            buffer += value;
+            textoRecebido += value;
 
 
-            const lines =
-                buffer.split("\n");
+            const linhas =
+                textoRecebido.split("\n");
 
 
-            buffer =
-                lines.pop();
+            textoRecebido =
+                linhas.pop();
 
 
-            for (const line of lines) {
+            for (const linha of linhas) {
 
-                processData(
-                    line.trim()
+                processarDados(
+                    linha.trim()
                 );
 
             }
 
         }
 
-    }
-
-    catch (error) {
+    } catch (erro) {
 
         console.error(
-            "Erro na comunicação:",
-            error
+            "Erro na leitura:",
+            erro
         );
 
-    }
-
-    finally {
-
-        reader.releaseLock();
+        atualizarStatusConexao(false);
 
     }
 
 }
 
 
-/* PROCESSAR DADOS */
 
-function processData(line) {
+// ================================
+// PROCESSAR DADOS (CORRIGIDO)
+// ================================
 
-    if (!line) {
+function processarDados(linha) {
+
+    console.log("Dados recebidos:", linha);
+
+    /*
+       Exemplo de linha recebida: "23.6,62.4,730"
+       23.6 = temperatura
+       62.4 = umidade
+       730  = luminosidade
+    */
+
+    // Separa por vírgula e limpa caracteres ocultos como \r e espaços em branco
+    const dados = linha.split(",").map(item => item.trim());
+
+    if (dados.length !== 3) {
+        return;
+    }
+
+    const temperatura = parseFloat(dados[0]);
+    const umidade = parseFloat(dados[1]);
+    const luminosidade = parseInt(dados[2], 10);
+
+    // Validação dos números
+    if (
+        Number.isNaN(temperatura) ||
+        Number.isNaN(umidade) ||
+        Number.isNaN(luminosidade)
+    ) {
+        console.warn("Valor inválido recebido:", dados);
+        return;
+    }
+
+    // Atribui às variáveis globais
+    temperaturaAtual = temperatura;
+    umidadeAtual = umidade;
+    luminosidadeAtual = luminosidade;
+
+    // Atualiza a tela e os alertas!
+    atualizarInterface();
+    verificarAlertas();
+}
+
+
+// ================================
+// ATUALIZAR INTERFACE
+// ================================
+
+function atualizarInterface() {
+
+    if (temperaturaElemento) {
+
+        temperaturaElemento.textContent =
+            temperaturaAtual.toFixed(1);
+
+    }
+
+
+    if (umidadeElemento) {
+
+        umidadeElemento.textContent =
+            umidadeAtual.toFixed(1);
+
+    }
+
+
+    if (luminosidadeElemento) {
+
+        luminosidadeElemento.textContent =
+            luminosidadeAtual;
+
+    }
+
+
+    atualizarSituacao();
+
+}
+
+
+// ================================
+// VERIFICAR ALERTAS
+// ================================
+
+function verificarAlertas() {
+
+    let alertas = [];
+
+
+    if (temperaturaAtual > 28) {
+
+        alertas.push(
+            "Temperatura acima do limite"
+        );
+
+    }
+
+
+    if (umidadeAtual > 70) {
+
+        alertas.push(
+            "Umidade acima do limite"
+        );
+
+    }
+
+
+    if (luminosidadeAtual > 350) {
+
+        alertas.push(
+            "Luminosidade acima do limite"
+        );
+
+    }
+
+
+    if (alertas.length > 0) {
+
+        atualizarSituacao(true);
+
+    } else {
+
+        atualizarSituacao(false);
+
+    }
+
+}
+
+
+// ================================
+// SITUAÇÃO DO AMBIENTE
+// ================================
+
+function atualizarSituacao(alerta = false) {
+
+    const status =
+        document.getElementById(
+            "environmentStatus"
+        );
+
+
+    const titulo =
+        document.getElementById(
+            "statusTitle"
+        );
+
+
+    const descricao =
+        document.getElementById(
+            "statusDescription"
+        );
+
+
+    const situacao =
+        document.getElementById(
+            "currentSituation"
+        );
+
+
+    if (!status || !titulo) {
         return;
     }
 
 
-    try {
+    if (alerta) {
 
-        const data =
-            JSON.parse(line);
-
-
-        if (
-            data.erro
-        ) {
-
-            showError();
-
-            return;
-        }
-
-
-        const temperature =
-            Number(
-                data.temperatura
-            );
-
-
-        const humidity =
-            Number(
-                data.umidade
-            );
-
-
-        const light =
-            Number(
-                data.luminosidade
-            );
-
-
-        updateDashboard(
-            temperature,
-            humidity,
-            light,
-            data.alerta
-        );
-
-    }
-
-    catch (error) {
-
-        console.log(
-            "Linha ignorada:",
-            line
-        );
-
-    }
-
-}
-
-
-/* ATUALIZAR DASHBOARD */
-
-function updateDashboard(
-    temperature,
-    humidity,
-    light,
-    alert
-) {
-
-    temperatureElement.textContent =
-        temperature.toFixed(1);
-
-
-    humidityElement.textContent =
-        humidity.toFixed(1);
-
-
-    lightElement.textContent =
-        Math.round(light);
-
-
-    const now =
-        new Date();
-
-
-    lastUpdate.textContent =
-        now.toLocaleTimeString(
-            "pt-BR"
+        status.classList.remove(
+            "normal"
         );
 
 
-    updateStatus(
-        temperature,
-        humidity,
-        light
-    );
+        status.classList.add(
+            "alert"
+        );
 
 
-    updateCharts(
-        temperature,
-        humidity,
-        light
-    );
-
-}
-
-
-/* STATUS */
-
-function updateStatus(
-    temperature,
-    humidity,
-    light
-) {
-
-    const temperatureAlert =
-        temperature > 28;
-
-
-    const humidityAlert =
-        humidity > 70;
-
-
-    const lightAlert =
-        light < 350;
-
-
-    const hasAlert =
-        temperatureAlert ||
-        humidityAlert ||
-        lightAlert;
-
-
-    if (hasAlert) {
-
-        statusBanner
-            .classList
-            .remove("normal");
-
-        statusBanner
-            .classList
-            .add("alert");
-
-
-        statusIcon.textContent =
-            "!";
-
-
-        statusTitle.textContent =
+        titulo.textContent =
             "Atenção necessária";
 
 
-        const messages = [];
+        descricao.textContent =
+            "Uma ou mais condições ultrapassaram o limite definido.";
 
 
-        if (temperatureAlert) {
-            messages.push(
-                "temperatura alta"
-            );
+        if (situacao) {
+
+            situacao.textContent =
+                "Alerta";
+
         }
 
+    } else {
 
-        if (humidityAlert) {
-            messages.push(
-                "umidade alta"
-            );
-        }
-
-
-        if (lightAlert) {
-            messages.push(
-                "luminosidade baixa"
-            );
-        }
+        status.classList.remove(
+            "alert"
+        );
 
 
-        statusDescription.textContent =
-            messages.join(" • ");
+        status.classList.add(
+            "normal"
+        );
 
 
-        alertCount++;
-
-
-        alertCountElement.textContent =
-            alertCount;
-
-    }
-
-    else {
-
-        statusBanner
-            .classList
-            .remove("alert");
-
-        statusBanner
-            .classList
-            .add("normal");
-
-
-        statusIcon.textContent =
-            "✓";
-
-
-        statusTitle.textContent =
+        titulo.textContent =
             "Ambiente normal";
 
 
-        statusDescription.textContent =
+        descricao.textContent =
             "Todas as condições estão dentro dos limites.";
 
+
+        if (situacao) {
+
+            situacao.textContent =
+                "Normal";
+
+        }
+
     }
 
 }
 
 
-/* GRÁFICOS */
+// ================================
+// LIMPAR ALERTAS
+// ================================
 
-function updateCharts(
-    temperature,
-    humidity,
-    light
-) {
-
-    const time =
-        new Date()
-            .toLocaleTimeString(
-                "pt-BR"
-            );
-
-
-    if (
-        labels.length >= maxPoints
-    ) {
-
-        labels.shift();
-
-        temperatureData.shift();
-
-        humidityData.shift();
-
-        lightData.shift();
-
-    }
-
-
-    labels.push(time);
-
-    temperatureData.push(
-        temperature
-    );
-
-    humidityData.push(
-        humidity
-    );
-
-    lightData.push(
-        light
+const botaoLimpar =
+    document.getElementById(
+        "clearAlerts"
     );
 
 
-    temperatureChart.update(
-        "none"
-    );
+if (botaoLimpar) {
 
-    humidityChart.update(
-        "none"
-    );
-
-    lightChart.update(
-        "none"
+    botaoLimpar.addEventListener(
+        "click",
+        limparAlertas
     );
 
 }
 
 
-/* ERRO NO DHT22 */
+function limparAlertas() {
 
-function showError() {
-
-    statusBanner
-        .classList
-        .remove("normal");
-
-    statusBanner
-        .classList
-        .add("alert");
+    quantidadeAlertas = 0;
 
 
-    statusIcon.textContent =
-        "!";
+    const total =
+        document.getElementById(
+            "totalAlerts"
+        );
 
 
-    statusTitle.textContent =
-        "Erro na leitura";
+    const lista =
+        document.getElementById(
+            "alertsList"
+        );
 
 
-    statusDescription.textContent =
-        "Não foi possível obter dados do DHT22.";
+    if (total) {
+
+        total.textContent = "0";
+
+    }
+
+
+    if (lista) {
+
+        lista.innerHTML = `
+            <div class="empty-alerts">
+
+                <div>✓</div>
+
+                <strong>
+                    Nenhum alerta registrado
+                </strong>
+
+                <p>
+                    Quando temperatura, umidade ou luminosidade ultrapassarem o limite, o alerta aparecerá aqui.
+                </p>
+
+            </div>
+        `;
+
+    }
 
 }

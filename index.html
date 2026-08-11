@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>SmartClass IoT</title>
+    <title>SmartClass IoT - Dashboard</title>
 
     <link rel="stylesheet" href="style.css">
 </head>
@@ -51,10 +51,9 @@
     </aside>
 
 
-    <!-- CONTEÚDO PRINCIPAL -->
+    <!-- CONTEÚDO -->
     <main class="main">
 
-        <!-- CABEÇALHO -->
         <header class="topbar">
 
             <div>
@@ -74,37 +73,35 @@
             </div>
 
 
-           <div class="connection-area">
+            <div class="connection-area">
 
-    <div class="connection">
-        <span class="status-dot"></span>
-        Arduino desconectado
-    </div>
+                <div class="connection" id="connectionStatus">
 
-    <button class="connect-button" id="connectArduino">
-        🔌 Conectar Arduino
-    </button>
+                    <span class="status-dot"></span>
 
-    <a class="connect-button" href="monitoramento.html">
-        Ver monitoramento
-    </a>
+                    Arduino desconectado
 
-</div>
+                </div>
 
 
-                
+                <button
+                    class="connect-button"
+                    id="connectArduino"
+                >
+                    🔌 Conectar Arduino
+                </button>
 
             </div>
 
         </header>
 
 
-        <!-- DASHBOARD -->
         <section class="dashboard">
 
 
-            <!-- STATUS DO AMBIENTE -->
-            <div class="status-banner normal">
+            <!-- STATUS -->
+
+            <div class="status-banner normal" id="environmentStatus">
 
                 <div class="status-icon">
                     ✓
@@ -112,12 +109,12 @@
 
                 <div>
 
-                    <strong>
-                        Ambiente normal
+                    <strong id="statusTitle">
+                        Aguardando dados
                     </strong>
 
-                    <p>
-                        Todas as condições estão dentro dos limites.
+                    <p id="statusDescription">
+                        Conecte o Arduino para receber as leituras dos sensores.
                     </p>
 
                 </div>
@@ -125,11 +122,13 @@
             </div>
 
 
-            <!-- CARDS DOS SENSORES -->
+            <!-- SENSORES -->
+
             <section class="cards">
 
 
                 <!-- TEMPERATURA -->
+
                 <article class="card">
 
                     <div class="card-top">
@@ -147,7 +146,9 @@
 
                     <div class="value">
 
-                        --
+                        <span id="temperatura">
+                            --
+                        </span>
 
                         <small>
                             °C
@@ -172,6 +173,7 @@
 
 
                 <!-- UMIDADE -->
+
                 <article class="card">
 
                     <div class="card-top">
@@ -189,7 +191,9 @@
 
                     <div class="value">
 
-                        --
+                        <span id="umidade">
+                            --
+                        </span>
 
                         <small>
                             %
@@ -214,6 +218,7 @@
 
 
                 <!-- LUMINOSIDADE -->
+
                 <article class="card">
 
                     <div class="card-top">
@@ -231,7 +236,9 @@
 
                     <div class="value">
 
-                        --
+                        <span id="luminosidade">
+                            --
+                        </span>
 
                         <small>
                             ADC
@@ -258,62 +265,50 @@
 
 
             <!-- RESUMO -->
+
             <section class="summary-grid">
 
 
-                <!-- SITUAÇÃO -->
                 <article class="info-card">
 
                     <div class="info-title">
-
                         <span>◉</span>
-
                         Situação atual
-
                     </div>
 
-
-                    <div class="big-status">
+                    <div
+                        class="big-status"
+                        id="currentSituation"
+                    >
                         Aguardando dados
                     </div>
 
-
                     <p class="muted">
-
-                        Conecte o Arduino para receber
-                        as leituras dos sensores.
-
+                        Os dados dos sensores aparecerão aqui após a conexão com o Arduino.
                     </p>
 
                 </article>
 
 
-                <!-- ALERTAS -->
                 <article class="info-card">
 
                     <div class="info-title">
-
                         <span>⚠</span>
-
                         Alertas
-
                     </div>
 
-
-                    <div class="big-status">
+                    <div
+                        class="big-status"
+                        id="alertCount"
+                    >
                         0
                     </div>
 
-
                     <p class="muted">
-
                         Nenhum alerta registrado.
-
                     </p>
 
-
                     <br>
-
 
                     <a
                         class="connect-button"
@@ -324,12 +319,14 @@
 
                 </article>
 
-
             </section>
 
         </section>
 
     </main>
+
+
+    <script src="script.js"></script>
 
 </body>
 
