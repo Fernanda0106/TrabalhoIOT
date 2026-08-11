@@ -4,6 +4,13 @@
     box-sizing: border-box;
 }
 
+html,
+body {
+    width: 100%;
+    min-height: 100%;
+    overflow-x: hidden;
+}
+
 body {
     font-family: Arial, Helvetica, sans-serif;
     background: #f4f7fb;
@@ -11,7 +18,9 @@ body {
 }
 
 
-/* SIDEBAR */
+/* =========================
+   MENU LATERAL
+========================= */
 
 .sidebar {
     position: fixed;
@@ -28,7 +37,12 @@ body {
     flex-direction: column;
 
     padding: 28px 20px;
+
+    z-index: 20;
 }
+
+
+/* LOGO */
 
 .logo {
     display: flex;
@@ -64,13 +78,20 @@ body {
 }
 
 
+/* NAVEGAÇÃO */
+
 nav {
     display: flex;
     flex-direction: column;
     gap: 8px;
 }
 
-nav a {
+.nav-item {
+    width: 100%;
+
+    border: 0;
+    background: transparent;
+
     color: #aeb9cf;
 
     padding: 13px 15px;
@@ -79,21 +100,39 @@ nav a {
 
     display: flex;
     align-items: center;
+
     gap: 12px;
 
     font-size: 14px;
+
+    cursor: pointer;
+
+    text-align: left;
+
+    position: relative;
+
+    text-decoration: none;
 }
 
-nav a.active {
+.nav-item:hover {
+    background: #14244c;
+    color: white;
+}
+
+.nav-item.active {
     background: #1d4ed8;
     color: white;
 }
+
+
+/* PARTE INFERIOR DO MENU */
 
 .sidebar-bottom {
     margin-top: auto;
 
     display: flex;
     flex-direction: column;
+
     gap: 5px;
 
     color: #aeb9cf;
@@ -106,15 +145,24 @@ nav a.active {
 }
 
 
-/* MAIN */
+/* =========================
+   CONTEÚDO PRINCIPAL
+========================= */
 
 .main {
     margin-left: 250px;
+
+    width: calc(100% - 250px);
+
     min-height: 100vh;
+
+    overflow-x: hidden;
 }
 
 
-/* TOPBAR */
+/* =========================
+   CABEÇALHO
+========================= */
 
 .topbar {
     background: white;
@@ -124,12 +172,16 @@ nav a.active {
     border-bottom: 1px solid #e3e8f0;
 
     display: flex;
+
     justify-content: space-between;
     align-items: center;
+
+    gap: 30px;
 }
 
 .breadcrumb {
     color: #64748b;
+
     font-size: 12px;
 
     margin-bottom: 7px;
@@ -145,22 +197,30 @@ nav a.active {
 
 .subtitle {
     color: #64748b;
+
     font-size: 13px;
 }
 
 
+/* =========================
+   CONEXÃO
+========================= */
+
 .connection-area {
     display: flex;
     align-items: center;
+
     gap: 15px;
 }
 
 .connection {
     display: flex;
     align-items: center;
+
     gap: 8px;
 
     font-size: 12px;
+
     color: #64748b;
 }
 
@@ -171,16 +231,24 @@ nav a.active {
     border-radius: 50%;
 
     background: #ef4444;
+
+    display: inline-block;
 }
 
 .connection.connected .status-dot {
     background: #22c55e;
 }
 
+
+/* BOTÕES */
+
 .connect-button {
+    display: inline-block;
+
     border: none;
 
     background: #2563eb;
+
     color: white;
 
     padding: 11px 17px;
@@ -191,7 +259,9 @@ nav a.active {
 
     cursor: pointer;
 
-    transition: 0.2s;
+    white-space: nowrap;
+
+    text-decoration: none;
 }
 
 .connect-button:hover {
@@ -199,17 +269,22 @@ nav a.active {
 }
 
 
-/* DASHBOARD */
+/* =========================
+   ÁREA DO DASHBOARD
+========================= */
 
 .dashboard {
     padding: 30px 38px;
 }
 
 
-/* STATUS */
+/* =========================
+   STATUS DO AMBIENTE
+========================= */
 
 .status-banner {
     display: flex;
+
     align-items: center;
 
     gap: 14px;
@@ -225,13 +300,17 @@ nav a.active {
 
 .status-banner.normal {
     background: #f0fdf4;
+
     border-color: #bbf7d0;
+
     color: #166534;
 }
 
 .status-banner.alert {
     background: #fef2f2;
+
     border-color: #fecaca;
+
     color: #b91c1c;
 }
 
@@ -267,13 +346,14 @@ nav a.active {
 }
 
 
-/* CARDS */
+/* =========================
+   CARDS DOS SENSORES
+========================= */
 
 .cards {
     display: grid;
 
-    grid-template-columns:
-        repeat(3, 1fr);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
 
     gap: 18px;
 
@@ -289,13 +369,14 @@ nav a.active {
 
     padding: 22px;
 
-    box-shadow:
-        0 3px 12px rgba(15, 23, 42, 0.04);
+    box-shadow: 0 3px 12px rgba(15, 23, 42, 0.04);
 }
 
 .card-top {
     display: flex;
+
     align-items: center;
+
     gap: 12px;
 }
 
@@ -358,6 +439,7 @@ nav a.active {
     padding-top: 13px;
 
     display: flex;
+
     justify-content: space-between;
 
     color: #64748b;
@@ -370,77 +452,14 @@ nav a.active {
 }
 
 
-/* CHARTS */
+/* =========================
+   RESUMO
+========================= */
 
-.charts {
+.summary-grid {
     display: grid;
 
-    grid-template-columns:
-        repeat(3, 1fr);
-
-    gap: 18px;
-
-    margin-bottom: 22px;
-}
-
-.chart-card {
-    background: white;
-
-    border: 1px solid #e3e8f0;
-
-    border-radius: 12px;
-
-    padding: 20px;
-}
-
-.chart-header {
-    display: flex;
-
-    justify-content: space-between;
-
-    align-items: flex-start;
-
-    margin-bottom: 15px;
-}
-
-.chart-header h3 {
-    font-size: 14px;
-
-    color: #172033;
-
-    margin-bottom: 4px;
-}
-
-.chart-header span {
-    color: #94a3b8;
-
-    font-size: 11px;
-}
-
-.chart-unit {
-    background: #eef4ff;
-
-    color: #2563eb !important;
-
-    padding: 5px 8px;
-
-    border-radius: 5px;
-
-    font-weight: bold;
-}
-
-.chart-container {
-    height: 190px;
-}
-
-
-/* INFORMATION */
-
-.information {
-    display: grid;
-
-    grid-template-columns:
-        1fr 1fr 1fr;
+    grid-template-columns: 2fr 1fr;
 
     gap: 18px;
 }
@@ -475,6 +494,56 @@ nav a.active {
     color: #2563eb;
 }
 
+.big-status {
+    color: #172033;
+
+    font-size: 24px;
+
+    font-weight: bold;
+
+    margin-bottom: 8px;
+}
+
+.muted {
+    color: #94a3b8;
+
+    font-size: 12px;
+}
+
+
+/* =========================
+   TÍTULOS DAS PÁGINAS
+========================= */
+
+.section-heading {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    margin-bottom: 22px;
+}
+
+.section-heading h2 {
+    color: #0b1736;
+
+    font-size: 21px;
+
+    margin-bottom: 5px;
+}
+
+.section-heading p {
+    color: #64748b;
+
+    font-size: 13px;
+}
+
+
+/* =========================
+   INFORMAÇÕES
+========================= */
+
 .info-row {
     display: flex;
 
@@ -499,36 +568,193 @@ nav a.active {
     color: #172033;
 }
 
-.last-update {
-    color: #172033;
 
-    font-size: 20px;
+/* =========================
+   ALERTAS
+========================= */
+
+.alert-summary {
+    display: flex;
+
+    align-items: center;
+
+    gap: 18px;
+
+    background: white;
+
+    border: 1px solid #e3e8f0;
+
+    border-radius: 12px;
+
+    padding: 22px;
+
+    margin-bottom: 18px;
+}
+
+.alert-summary-number {
+    width: 60px;
+    height: 60px;
+
+    border-radius: 12px;
+
+    background: #eff6ff;
+
+    color: #2563eb;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    font-size: 25px;
 
     font-weight: bold;
 }
 
-.alert-count {
-    display: flex;
-
-    align-items: baseline;
-
-    gap: 10px;
-}
-
-.alert-count strong {
+.alert-summary strong {
     color: #172033;
 
-    font-size: 30px;
+    font-size: 14px;
 }
 
-.alert-count span {
-    color: #64748b;
+.alert-summary p {
+    color: #94a3b8;
 
+    font-size: 12px;
+
+    margin-top: 5px;
+}
+
+
+/* BOTÃO SECUNDÁRIO */
+
+.secondary-button {
+    border: 1px solid #dbe3ef;
+
+    background: white;
+
+    color: #475569;
+
+    padding: 9px 13px;
+
+    border-radius: 7px;
+
+    cursor: pointer;
+}
+
+.secondary-button:hover {
+    background: #f8fafc;
+}
+
+
+/* LISTA DE ALERTAS */
+
+.alerts-list {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 12px;
+}
+
+
+/* NENHUM ALERTA */
+
+.empty-alerts {
+    background: white;
+
+    border: 1px solid #e3e8f0;
+
+    border-radius: 12px;
+
+    padding: 45px 20px;
+
+    text-align: center;
+
+    color: #64748b;
+}
+
+.empty-alerts > div {
+    width: 45px;
+    height: 45px;
+
+    margin: 0 auto 12px;
+
+    border-radius: 50%;
+
+    background: #dcfce7;
+
+    color: #166534;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    font-weight: bold;
+}
+
+.empty-alerts strong {
+    display: block;
+
+    color: #172033;
+
+    margin-bottom: 5px;
+}
+
+.empty-alerts p {
     font-size: 12px;
 }
 
 
-/* FOOTER */
+/* ALERTA INDIVIDUAL */
+
+.alert-item {
+    background: white;
+
+    border: 1px solid #fecaca;
+
+    border-left: 4px solid #ef4444;
+
+    border-radius: 10px;
+
+    padding: 17px 18px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 15px;
+}
+
+.alert-item-title {
+    color: #991b1b;
+
+    font-weight: bold;
+
+    font-size: 13px;
+}
+
+.alert-item-value {
+    color: #172033;
+
+    font-size: 13px;
+
+    margin-top: 4px;
+}
+
+.alert-item-time {
+    color: #94a3b8;
+
+    font-size: 11px;
+}
+
+
+/* =========================
+   RODAPÉ
+========================= */
 
 footer {
     padding: 20px 38px;
@@ -543,16 +769,14 @@ footer {
 }
 
 
-/* RESPONSIVO */
+/* =========================
+   RESPONSIVIDADE
+========================= */
 
-@media (max-width: 1100px) {
+@media (max-width: 1000px) {
 
     .cards,
-    .charts {
-        grid-template-columns: 1fr;
-    }
-
-    .information {
+    .summary-grid {
         grid-template-columns: 1fr;
     }
 
@@ -562,27 +786,31 @@ footer {
 @media (max-width: 750px) {
 
     .sidebar {
-        display: none;
+        position: relative;
+
+        width: 100%;
+
+        height: auto;
     }
 
     .main {
         margin-left: 0;
+
+        width: 100%;
     }
 
     .topbar {
         flex-direction: column;
 
         align-items: flex-start;
-
-        gap: 20px;
-    }
-
-    .dashboard {
-        padding: 20px;
     }
 
     .connection-area {
         width: 100%;
     }
 
-}   
+    .dashboard {
+        padding: 20px;
+    }
+
+}

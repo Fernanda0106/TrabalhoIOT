@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>SmartClass IoT</title>
+    <title>SmartClass IoT - Monitoramento</title>
 
     <link rel="stylesheet" href="style.css">
 </head>
@@ -16,22 +16,27 @@
     <aside class="sidebar">
 
         <div class="logo">
-            <div class="logo-icon">SC</div>
+
+            <div class="logo-icon">
+                SC
+            </div>
 
             <div>
                 <h2>SmartClass</h2>
                 <span>IoT Monitor</span>
             </div>
+
         </div>
+
 
         <nav>
 
-            <a class="nav-item active" href="index.html">
+            <a class="nav-item" href="index.html">
                 <span>▣</span>
                 Dashboard
             </a>
 
-            <a class="nav-item" href="monitoramento.html">
+            <a class="nav-item active" href="monitoramento.html">
                 <span>◉</span>
                 Monitoramento
             </a>
@@ -43,9 +48,17 @@
 
         </nav>
 
+
         <div class="sidebar-bottom">
-            <span>Projeto SENAI</span>
-            <small>SmartClass IoT • 2026</small>
+
+            <span>
+                Projeto SENAI
+            </span>
+
+            <small>
+                SmartClass IoT • 2026
+            </small>
+
         </div>
 
     </aside>
@@ -54,39 +67,36 @@
     <!-- CONTEÚDO PRINCIPAL -->
     <main class="main">
 
+
         <!-- CABEÇALHO -->
         <header class="topbar">
 
             <div>
 
                 <p class="breadcrumb">
-                    IoT / Dashboard
+                    IoT / Monitoramento
                 </p>
 
                 <h1>
-                    Monitoramento da Sala
+                    Monitoramento em tempo real
                 </h1>
 
                 <p class="subtitle">
-                    Acompanhe as condições do ambiente em tempo real.
+                    Acompanhe as leituras dos sensores.
                 </p>
 
             </div>
 
 
-           <div class="connection-area">
+            <div class="connection-area">
 
     <div class="connection">
         <span class="status-dot"></span>
         Arduino desconectado
     </div>
 
-    <button class="connect-button" id="connectArduino">
-        🔌 Conectar Arduino
-    </button>
-
-    <a class="connect-button" href="monitoramento.html">
-        Ver monitoramento
+    <a class="connect-button" href="index.html">
+        Voltar ao Dashboard
     </a>
 
 </div>
@@ -99,25 +109,22 @@
         </header>
 
 
-        <!-- DASHBOARD -->
+        <!-- MONITORAMENTO -->
         <section class="dashboard">
 
 
-            <!-- STATUS DO AMBIENTE -->
-            <div class="status-banner normal">
-
-                <div class="status-icon">
-                    ✓
-                </div>
+            <!-- TÍTULO -->
+            <div class="section-heading">
 
                 <div>
 
-                    <strong>
-                        Ambiente normal
-                    </strong>
+                    <h2>
+                        Leituras dos sensores
+                    </h2>
 
                     <p>
-                        Todas as condições estão dentro dos limites.
+                        Esta página será ligada aos dados reais
+                        do Arduino na próxima etapa.
                     </p>
 
                 </div>
@@ -125,7 +132,7 @@
             </div>
 
 
-            <!-- CARDS DOS SENSORES -->
+            <!-- CARDS -->
             <section class="cards">
 
 
@@ -152,19 +159,6 @@
                         <small>
                             °C
                         </small>
-
-                    </div>
-
-
-                    <div class="card-bottom">
-
-                        <span>
-                            Limite de alerta
-                        </span>
-
-                        <strong>
-                            28 °C
-                        </strong>
 
                     </div>
 
@@ -197,19 +191,6 @@
 
                     </div>
 
-
-                    <div class="card-bottom">
-
-                        <span>
-                            Limite de alerta
-                        </span>
-
-                        <strong>
-                            70%
-                        </strong>
-
-                    </div>
-
                 </article>
 
 
@@ -239,88 +220,77 @@
 
                     </div>
 
-
-                    <div class="card-bottom">
-
-                        <span>
-                            Limite de alerta
-                        </span>
-
-                        <strong>
-                            350
-                        </strong>
-
-                    </div>
-
                 </article>
 
             </section>
 
 
-            <!-- RESUMO -->
+            <!-- INFORMAÇÕES -->
             <section class="summary-grid">
 
 
-                <!-- SITUAÇÃO -->
+                <!-- HISTÓRICO -->
                 <article class="info-card">
 
                     <div class="info-title">
 
-                        <span>◉</span>
-
-                        Situação atual
+                        📊 Histórico
 
                     </div>
 
 
                     <div class="big-status">
-                        Aguardando dados
+
+                        Aguardando Arduino
+
                     </div>
 
 
                     <p class="muted">
 
-                        Conecte o Arduino para receber
-                        as leituras dos sensores.
+                        Quando os sensores forem conectados,
+                        os valores poderão ser exibidos aqui
+                        em gráficos.
 
                     </p>
 
                 </article>
 
 
-                <!-- ALERTAS -->
+                <!-- COMUNICAÇÃO -->
                 <article class="info-card">
 
                     <div class="info-title">
 
-                        <span>⚠</span>
-
-                        Alertas
+                        🔌 Comunicação
 
                     </div>
 
 
-                    <div class="big-status">
-                        0
+                    <div class="info-row">
+
+                        <span>
+                            Porta
+                        </span>
+
+                        <strong>
+                            Arduino
+                        </strong>
+
                     </div>
 
 
-                    <p class="muted">
+                    <div class="info-row">
 
-                        Nenhum alerta registrado.
+                        <span>
+                            Baud rate
+                        </span>
 
-                    </p>
+                        <strong>
+                            9600
+                        </strong>
 
-
-                    <br>
-
-
-                    <a
-                        class="connect-button"
-                        href="alertas.html"
-                    >
-                        Ver alertas
-                    </a>
+                    </div>
 
                 </article>
 
