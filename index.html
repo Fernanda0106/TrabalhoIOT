@@ -5,326 +5,809 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>SmartClass IoT - Dashboard</title>
+    <title>SmartClass IoT</title>
 
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-    <!-- MENU LATERAL -->
+    <!-- ==================================================
+         MENU LATERAL
+    ================================================== -->
+
     <aside class="sidebar">
 
         <div class="logo">
-            <div class="logo-icon">SC</div>
+
+            <div class="logo-icon">
+                SC
+            </div>
 
             <div>
                 <h2>SmartClass</h2>
                 <span>IoT Monitor</span>
             </div>
+
         </div>
+
 
         <nav>
 
-            <a class="nav-item active" href="index.html">
+            <button
+                type="button"
+                class="nav-item active"
+                data-page="dashboard"
+            >
                 <span>▣</span>
                 Dashboard
-            </a>
+            </button>
 
-            <a class="nav-item" href="monitoramento.html">
+
+            <button
+                type="button"
+                class="nav-item"
+                data-page="monitoramento"
+            >
                 <span>◉</span>
                 Monitoramento
-            </a>
+            </button>
 
-            <a class="nav-item" href="alertas.html">
+
+            <button
+                type="button"
+                class="nav-item"
+                data-page="alertas"
+            >
                 <span>⚠</span>
                 Alertas
-            </a>
+            </button>
 
         </nav>
 
+
         <div class="sidebar-bottom">
-            <span>Projeto SENAI</span>
-            <small>SmartClass IoT • 2026</small>
+
+            <span>
+                Projeto SENAI
+            </span>
+
+            <small>
+                SmartClass IoT • 2026
+            </small>
+
         </div>
 
     </aside>
 
 
-    <!-- CONTEÚDO -->
+    <!-- ==================================================
+         CONTEÚDO PRINCIPAL
+    ================================================== -->
+
     <main class="main">
 
-        <header class="topbar">
 
-            <div>
+        <!-- ==================================================
+             DASHBOARD
+        ================================================== -->
 
-                <p class="breadcrumb">
-                    IoT / Dashboard
-                </p>
+        <section
+            class="page active-page"
+            id="page-dashboard"
+        >
 
-                <h1>
-                    Monitoramento da Sala
-                </h1>
-
-                <p class="subtitle">
-                    Acompanhe as condições do ambiente em tempo real.
-                </p>
-
-            </div>
-
-
-            <div class="connection-area">
-
-                <div class="connection" id="connectionStatus">
-
-                    <span class="status-dot"></span>
-
-                    Arduino desconectado
-
-                </div>
-
-
-                <button
-                    class="connect-button"
-                    id="connectArduino"
-                >
-                    🔌 Conectar Arduino
-                </button>
-
-            </div>
-
-        </header>
-
-
-        <section class="dashboard">
-
-
-            <!-- STATUS -->
-
-            <div class="status-banner normal" id="environmentStatus">
-
-                <div class="status-icon">
-                    ✓
-                </div>
+            <header class="topbar">
 
                 <div>
 
-                    <strong id="statusTitle">
-                        Aguardando dados
-                    </strong>
+                    <p class="breadcrumb">
+                        IoT / Dashboard
+                    </p>
 
-                    <p id="statusDescription">
-                        Conecte o Arduino para receber as leituras dos sensores.
+                    <h1>
+                        Monitoramento da Sala
+                    </h1>
+
+                    <p class="subtitle">
+                        Acompanhe as condições do ambiente em tempo real.
                     </p>
 
                 </div>
 
+
+                <div class="connection-area">
+
+                    <div
+                        class="connection"
+                        id="connectionStatus"
+                    >
+
+                        <span class="status-dot"></span>
+
+                        Arduino desconectado
+
+                    </div>
+
+
+                    <button
+                        type="button"
+                        class="connect-button"
+                        id="connectArduino"
+                    >
+                        🔌 Conectar Arduino
+                    </button>
+
+                </div>
+
+            </header>
+
+
+            <div class="dashboard">
+
+
+                <!-- STATUS -->
+
+                <div
+                    class="status-banner normal"
+                    id="environmentStatus"
+                >
+
+                    <div class="status-icon">
+                        ✓
+                    </div>
+
+                    <div>
+
+                        <strong id="statusTitle">
+                            Aguardando dados
+                        </strong>
+
+                        <p id="statusDescription">
+                            Conecte o Arduino para receber as leituras dos sensores.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- SENSORES -->
+
+                <section class="cards">
+
+
+                    <!-- TEMPERATURA -->
+
+                    <article class="card">
+
+                        <div class="card-top">
+
+                            <div class="sensor-icon temperature">
+                                🌡️
+                            </div>
+
+                            <span class="card-label">
+                                TEMPERATURA
+                            </span>
+
+                        </div>
+
+
+                        <div class="value">
+
+                            <span id="temperatura">
+                                --
+                            </span>
+
+                            <small>
+                                °C
+                            </small>
+
+                        </div>
+
+
+                        <div class="card-bottom">
+
+                            <span>
+                                Limite de alerta
+                            </span>
+
+                            <strong>
+                                28 °C
+                            </strong>
+
+                        </div>
+
+                    </article>
+
+
+                    <!-- UMIDADE -->
+
+                    <article class="card">
+
+                        <div class="card-top">
+
+                            <div class="sensor-icon humidity">
+                                💧
+                            </div>
+
+                            <span class="card-label">
+                                UMIDADE
+                            </span>
+
+                        </div>
+
+
+                        <div class="value">
+
+                            <span id="umidade">
+                                --
+                            </span>
+
+                            <small>
+                                %
+                            </small>
+
+                        </div>
+
+
+                        <div class="card-bottom">
+
+                            <span>
+                                Limite de alerta
+                            </span>
+
+                            <strong>
+                                70%
+                            </strong>
+
+                        </div>
+
+                    </article>
+
+
+                    <!-- LUMINOSIDADE -->
+
+                    <article class="card">
+
+                        <div class="card-top">
+
+                            <div class="sensor-icon light">
+                                ☀️
+                            </div>
+
+                            <span class="card-label">
+                                LUMINOSIDADE
+                            </span>
+
+                        </div>
+
+
+                        <div class="value">
+
+                            <span id="luminosidade">
+                                --
+                            </span>
+
+                            <small>
+                                ADC
+                            </small>
+
+                        </div>
+
+
+                        <div class="card-bottom">
+
+                            <span>
+                                Limite de alerta
+                            </span>
+
+                            <strong>
+                                350
+                            </strong>
+
+                        </div>
+
+                    </article>
+
+                </section>
+
+
+                <!-- RESUMO -->
+
+                <section class="summary-grid">
+
+
+                    <article class="info-card">
+
+                        <div class="info-title">
+                            <span>◉</span>
+                            Situação atual
+                        </div>
+
+
+                        <div
+                            class="big-status"
+                            id="currentSituation"
+                        >
+                            Aguardando dados
+                        </div>
+
+
+                        <p
+                            class="muted"
+                            id="dashboardDescription"
+                        >
+                            Os dados dos sensores aparecerão aqui após a conexão com o Arduino.
+                        </p>
+
+                    </article>
+
+
+                    <article class="info-card">
+
+                        <div class="info-title">
+                            <span>⚠</span>
+                            Alertas
+                        </div>
+
+
+                        <div
+                            class="big-status"
+                            id="alertCount"
+                        >
+                            0
+                        </div>
+
+
+                        <p
+                            class="muted"
+                            id="alertMessage"
+                        >
+                            Nenhum alerta registrado.
+                        </p>
+
+                    </article>
+
+                </section>
+
             </div>
 
+        </section>
 
-            <!-- SENSORES -->
 
-            <section class="cards">
 
+        <!-- ==================================================
+             MONITORAMENTO
+        ================================================== -->
 
-                <!-- TEMPERATURA -->
+        <section
+            class="page"
+            id="page-monitoramento"
+        >
 
-                <article class="card">
+            <header class="topbar">
 
-                    <div class="card-top">
+                <div>
 
-                        <div class="sensor-icon temperature">
-                            🌡️
-                        </div>
-
-                        <span class="card-label">
-                            TEMPERATURA
-                        </span>
-
-                    </div>
-
-
-                    <div class="value">
-
-                        <span id="temperatura">
-                            --
-                        </span>
-
-                        <small>
-                            °C
-                        </small>
-
-                    </div>
-
-
-                    <div class="card-bottom">
-
-                        <span>
-                            Limite de alerta
-                        </span>
-
-                        <strong>
-                            28 °C
-                        </strong>
-
-                    </div>
-
-                </article>
-
-
-                <!-- UMIDADE -->
-
-                <article class="card">
-
-                    <div class="card-top">
-
-                        <div class="sensor-icon humidity">
-                            💧
-                        </div>
-
-                        <span class="card-label">
-                            UMIDADE
-                        </span>
-
-                    </div>
-
-
-                    <div class="value">
-
-                        <span id="umidade">
-                            --
-                        </span>
-
-                        <small>
-                            %
-                        </small>
-
-                    </div>
-
-
-                    <div class="card-bottom">
-
-                        <span>
-                            Limite de alerta
-                        </span>
-
-                        <strong>
-                            70%
-                        </strong>
-
-                    </div>
-
-                </article>
-
-
-                <!-- LUMINOSIDADE -->
-
-                <article class="card">
-
-                    <div class="card-top">
-
-                        <div class="sensor-icon light">
-                            ☀️
-                        </div>
-
-                        <span class="card-label">
-                            LUMINOSIDADE
-                        </span>
-
-                    </div>
-
-
-                    <div class="value">
-
-                        <span id="luminosidade">
-                            --
-                        </span>
-
-                        <small>
-                            ADC
-                        </small>
-
-                    </div>
-
-
-                    <div class="card-bottom">
-
-                        <span>
-                            Limite de alerta
-                        </span>
-
-                        <strong>
-                            350
-                        </strong>
-
-                    </div>
-
-                </article>
-
-            </section>
-
-
-            <!-- RESUMO -->
-
-            <section class="summary-grid">
-
-
-                <article class="info-card">
-
-                    <div class="info-title">
-                        <span>◉</span>
-                        Situação atual
-                    </div>
-
-                    <div
-                        class="big-status"
-                        id="currentSituation"
-                    >
-                        Aguardando dados
-                    </div>
-
-                    <p class="muted">
-                        Os dados dos sensores aparecerão aqui após a conexão com o Arduino.
+                    <p class="breadcrumb">
+                        IoT / Monitoramento
                     </p>
 
-                </article>
+                    <h1>
+                        Monitoramento em tempo real
+                    </h1>
+
+                    <p class="subtitle">
+                        Acompanhe as leituras dos sensores.
+                    </p>
+
+                </div>
 
 
-                <article class="info-card">
+                <div class="connection-area">
 
-                    <div class="info-title">
-                        <span>⚠</span>
-                        Alertas
-                    </div>
+                    <!-- SOMENTE STATUS.
+                         O BOTÃO DE CONEXÃO FICA NO DASHBOARD. -->
 
                     <div
-                        class="big-status"
-                        id="alertCount"
+                        class="connection"
+                        id="connectionStatusMonitoramento"
+                    >
+
+                        <span class="status-dot"></span>
+
+                        Arduino desconectado
+
+                    </div>
+
+                </div>
+
+            </header>
+
+
+            <div class="dashboard">
+
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <h2>
+                            Leituras dos sensores
+                        </h2>
+
+                        <p>
+                            Dados recebidos diretamente do Arduino.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <section class="cards">
+
+
+                    <!-- TEMPERATURA -->
+
+                    <article class="card">
+
+                        <div class="card-top">
+
+                            <div class="sensor-icon temperature">
+                                🌡️
+                            </div>
+
+                            <span class="card-label">
+                                TEMPERATURA
+                            </span>
+
+                        </div>
+
+
+                        <div class="value">
+
+                            <span id="temperaturaMonitoramento">
+                                --
+                            </span>
+
+                            <small>
+                                °C
+                            </small>
+
+                        </div>
+
+
+                        <div class="card-bottom">
+
+                            <span>
+                                Limite
+                            </span>
+
+                            <strong>
+                                28 °C
+                            </strong>
+
+                        </div>
+
+                    </article>
+
+
+                    <!-- UMIDADE -->
+
+                    <article class="card">
+
+                        <div class="card-top">
+
+                            <div class="sensor-icon humidity">
+                                💧
+                            </div>
+
+                            <span class="card-label">
+                                UMIDADE
+                            </span>
+
+                        </div>
+
+
+                        <div class="value">
+
+                            <span id="umidadeMonitoramento">
+                                --
+                            </span>
+
+                            <small>
+                                %
+                            </small>
+
+                        </div>
+
+
+                        <div class="card-bottom">
+
+                            <span>
+                                Limite
+                            </span>
+
+                            <strong>
+                                70%
+                            </strong>
+
+                        </div>
+
+                    </article>
+
+
+                    <!-- LUMINOSIDADE -->
+
+                    <article class="card">
+
+                        <div class="card-top">
+
+                            <div class="sensor-icon light">
+                                ☀️
+                            </div>
+
+                            <span class="card-label">
+                                LUMINOSIDADE
+                            </span>
+
+                        </div>
+
+
+                        <div class="value">
+
+                            <span id="luminosidadeMonitoramento">
+                                --
+                            </span>
+
+                            <small>
+                                ADC
+                            </small>
+
+                        </div>
+
+
+                        <div class="card-bottom">
+
+                            <span>
+                                Limite
+                            </span>
+
+                            <strong>
+                                350
+                            </strong>
+
+                        </div>
+
+                    </article>
+
+                </section>
+
+
+                <section class="summary-grid">
+
+
+                    <!-- HISTÓRICO -->
+
+                    <article class="info-card">
+
+                        <div class="info-title">
+                            📊 Histórico
+                        </div>
+
+
+                        <div
+                            class="big-status"
+                            id="historicoStatus"
+                        >
+                            Aguardando Arduino
+                        </div>
+
+
+                        <p class="muted">
+                            Os valores recebidos são atualizados em tempo real.
+                        </p>
+
+                    </article>
+
+
+                    <!-- COMUNICAÇÃO -->
+
+                    <article class="info-card">
+
+                        <div class="info-title">
+                            🔌 Comunicação
+                        </div>
+
+
+                        <div class="info-row">
+
+                            <span>
+                                Porta
+                            </span>
+
+                            <strong>
+                                Arduino
+                            </strong>
+
+                        </div>
+
+
+                        <div class="info-row">
+
+                            <span>
+                                Baud rate
+                            </span>
+
+                            <strong>
+                                9600
+                            </strong>
+
+                        </div>
+
+
+                        <div class="info-row">
+
+                            <span>
+                                Status
+                            </span>
+
+                            <strong id="communicationStatus">
+                                Desconectado
+                            </strong>
+
+                        </div>
+
+                    </article>
+
+                </section>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ==================================================
+             ALERTAS
+        ================================================== -->
+
+        <section
+            class="page"
+            id="page-alertas"
+        >
+
+            <header class="topbar">
+
+                <div>
+
+                    <p class="breadcrumb">
+                        IoT / Alertas
+                    </p>
+
+                    <h1>
+                        Alertas do ambiente
+                    </h1>
+
+                    <p class="subtitle">
+                        Acompanhe condições que ultrapassarem os limites.
+                    </p>
+
+                </div>
+
+
+                <div class="connection-area">
+
+                    <div
+                        class="connection"
+                        id="connectionStatusAlertas"
+                    >
+
+                        <span class="status-dot"></span>
+
+                        Arduino desconectado
+
+                    </div>
+
+                </div>
+
+            </header>
+
+
+            <div class="dashboard">
+
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <h2>
+                            Alertas do ambiente
+                        </h2>
+
+                        <p>
+                            Registros gerados quando uma condição sai do limite definido.
+                        </p>
+
+                    </div>
+
+
+                    <button
+                        type="button"
+                        id="clearAlerts"
+                        class="secondary-button"
+                    >
+                        Limpar histórico
+                    </button>
+
+                </div>
+
+
+                <!-- RESUMO DOS ALERTAS -->
+
+                <div class="alert-summary">
+
+                    <div
+                        class="alert-summary-number"
+                        id="totalAlerts"
                     >
                         0
                     </div>
 
-                    <p class="muted">
-                        Nenhum alerta registrado.
-                    </p>
 
-                    <br>
+                    <div>
 
-                    <a
-                        class="connect-button"
-                        href="alertas.html"
-                    >
-                        Ver alertas
-                    </a>
+                        <strong>
+                            Alertas registrados
+                        </strong>
 
-                </article>
+                        <p id="alertSummaryMessage">
+                            Nenhum alerta registrado.
+                        </p>
 
-            </section>
+                    </div>
+
+                </div>
+
+
+                <!-- LISTA DE ALERTAS -->
+
+                <div
+                    id="alertsList"
+                    class="alerts-list"
+                >
+
+                    <div class="empty-alerts">
+
+                        <div>
+                            ✓
+                        </div>
+
+                        <strong>
+                            Nenhum alerta registrado
+                        </strong>
+
+                        <p>
+                            Quando temperatura, umidade ou luminosidade ultrapassarem o limite, o alerta aparecerá aqui.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
 
         </section>
 
     </main>
 
+
+    <!-- ==================================================
+         JAVASCRIPT
+    ================================================== -->
 
     <script src="script.js"></script>
 

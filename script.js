@@ -1,3 +1,13 @@
+// ==================================================
+// SMARTCLASS IoT
+// SCRIPT PRINCIPAL
+// ==================================================
+
+
+// ==================================================
+// VARIÁVEIS DO ARDUINO
+// ==================================================
+
 let portaSerial = null;
 let leitor = null;
 
@@ -7,14 +17,27 @@ let luminosidadeAtual = null;
 
 let quantidadeAlertas = 0;
 
+let alertas = [];
 
-// ================================
-// ELEMENTOS DA PÁGINA
-// ================================
 
-const botaoConectar = document.getElementById("connectArduino");
+// ==================================================
+// LIMITES DOS SENSORES
+// ==================================================
 
-const statusConexao = document.getElementById("connectionStatus");
+const LIMITE_TEMPERATURA = 28;
+const LIMITE_UMIDADE = 70;
+const LIMITE_LUMINOSIDADE = 350;
+
+
+// ==================================================
+// ELEMENTOS
+// ==================================================
+
+const botaoConectar =
+    document.getElementById("connectArduino");
+
+const statusConexao =
+    document.getElementById("connectionStatus");
 
 const temperaturaElemento =
     document.getElementById("temperatura");
@@ -25,13 +48,94 @@ const umidadeElemento =
 const luminosidadeElemento =
     document.getElementById("luminosidade");
 
-const communicationStatus =
-    document.getElementById("communicationStatus");
+
+// ==================================================
+// INICIALIZAÇÃO
+// ==================================================
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    configurarNavegacao();
+
+    carregarAlertas();
+
+    atualizarInterface();
+
+    atualizarStatusConexao(false);
+
+});
 
 
-// ================================
+// ==================================================
+// NAVEGAÇÃO ENTRE AS TELAS
+// ==================================================
+
+function configurarNavegacao() {
+
+    const botoes =
+        document.querySelectorAll(".nav-item");
+
+    const paginas =
+        document.querySelectorAll(".page");
+
+
+    botoes.forEach(botao => {
+
+        botao.addEventListener("click", () => {
+
+            const pagina =
+                botao.dataset.page;
+
+
+            // Remove página ativa
+            paginas.forEach(p => {
+
+                p.classList.remove(
+                    "active-page"
+                );
+
+            });
+
+
+            // Remove botão ativo
+            botoes.forEach(b => {
+
+                b.classList.remove(
+                    "active"
+                );
+
+            });
+
+
+            // Mostra a página escolhida
+            const paginaSelecionada =
+                document.getElementById(
+                    `page-${pagina}`
+                );
+
+
+            if (paginaSelecionada) {
+
+                paginaSelecionada.classList.add(
+                    "active-page"
+                );
+
+            }
+
+
+            // Marca botão selecionado
+            botao.classList.add("active");
+
+        });
+
+    });
+
+}
+
+
+// ==================================================
 // BOTÃO CONECTAR
-// ================================
+// ==================================================
 
 if (botaoConectar) {
 
@@ -43,9 +147,9 @@ if (botaoConectar) {
 }
 
 
-// ================================
+// ==================================================
 // CONECTAR ARDUINO
-// ================================
+// ==================================================
 
 async function conectarArduino() {
 
@@ -56,26 +160,40 @@ async function conectarArduino() {
         );
 
         return;
+
+    }
+
+
+    // Se já estiver conectado
+    if (portaSerial) {
+
+        return;
+
     }
 
 
     try {
 
-        // Abre a janela para escolher a porta
+        console.log(
+            "Selecionando porta do Arduino..."
+        );
+
+
         portaSerial =
             await navigator.serial.requestPort();
 
 
-        // Abre a comunicação serial
         await portaSerial.open({
             baudRate: 9600
         });
 
 
+        console.log(
+            "Arduino conectado!"
+        );
+
+
         atualizarStatusConexao(true);
-
-
-        console.log("Arduino conectado.");
 
 
         iniciarLeitura();
@@ -88,6 +206,10 @@ async function conectarArduino() {
             erro
         );
 
+
+        portaSerial = null;
+
+
         atualizarStatusConexao(false);
 
     }
@@ -95,73 +217,99 @@ async function conectarArduino() {
 }
 
 
-// ================================
-// STATUS DA CONEXÃO
-// ================================
+// ==================================================
+// ATUALIZAR STATUS DA CONEXÃO
+// ==================================================
 
 function atualizarStatusConexao(conectado) {
 
-    if (!statusConexao) {
-        return;
-    }
+    const statusElementos = [
+
+        document.getElementById(
+            "connectionStatus"
+        ),
+
+        document.getElementById(
+            "connectionStatusMonitoramento"
+        ),
+
+        document.getElementById(
+            "connectionStatusAlertas"
+        )
+
+    ];
 
 
-    if (conectado) {
+    statusElementos.forEach(status => {
 
-        statusConexao.innerHTML =
-            '<span class="status-dot"></span> Arduino conectado';
-
-
-        statusConexao.classList.add("connected");
+        if (!status) {
+            return;
+        }
 
 
-        if (botaoConectar) {
+        if (conectado) {
+
+            status.innerHTML =
+                '<span class="status-dot"></span> Arduino conectado';
+
+            status.classList.add(
+                "connected"
+            );
+
+        } else {
+
+            status.innerHTML =
+                '<span class="status-dot"></span> Arduino desconectado';
+
+            status.classList.remove(
+                "connected"
+            );
+
+        }
+
+    });
+
+
+    // Botão do Dashboard
+    if (botaoConectar) {
+
+        if (conectado) {
 
             botaoConectar.textContent =
                 "🟢 Arduino conectado";
 
-        }
-
-
-        if (communicationStatus) {
-
-            communicationStatus.textContent =
-                "Conectado";
-
-        }
-
-    } else {
-
-        statusConexao.innerHTML =
-            '<span class="status-dot"></span> Arduino desconectado';
-
-
-        statusConexao.classList.remove("connected");
-
-
-        if (botaoConectar) {
+        } else {
 
             botaoConectar.textContent =
                 "🔌 Conectar Arduino";
 
         }
 
+    }
 
-        if (communicationStatus) {
 
-            communicationStatus.textContent =
-                "Desconectado";
+    // Status da comunicação
+    const communicationStatus =
+        document.getElementById(
+            "communicationStatus"
+        );
 
-        }
+
+    if (communicationStatus) {
+
+        communicationStatus.textContent =
+            conectado
+                ? "Conectado"
+                : "Desconectado";
 
     }
 
 }
 
 
-// ================================
+// ==================================================
 // LER DADOS DO ARDUINO
-// ================================
+// ==================================================
 
 async function iniciarLeitura() {
 
@@ -170,23 +318,23 @@ async function iniciarLeitura() {
     }
 
 
-    const decoder =
-        new TextDecoderStream();
-
-
-    portaSerial.readable.pipeTo(
-        decoder.writable
-    );
-
-
-    leitor =
-        decoder.readable.getReader();
-
-
-    let textoRecebido = "";
-
-
     try {
+
+        const decoder =
+            new TextDecoderStream();
+
+
+        portaSerial.readable.pipeTo(
+            decoder.writable
+        );
+
+
+        leitor =
+            decoder.readable.getReader();
+
+
+        let textoRecebido = "";
+
 
         while (true) {
 
@@ -225,9 +373,10 @@ async function iniciarLeitura() {
     } catch (erro) {
 
         console.error(
-            "Erro na leitura:",
+            "Erro na leitura do Arduino:",
             erro
         );
+
 
         atualizarStatusConexao(false);
 
@@ -236,64 +385,142 @@ async function iniciarLeitura() {
 }
 
 
-
-// ================================
-// PROCESSAR DADOS (CORRIGIDO)
-// ================================
+// ==================================================
+// PROCESSAR DADOS
+// ==================================================
 
 function processarDados(linha) {
 
-    console.log("Dados recebidos:", linha);
+    console.log(
+        "Dados recebidos:",
+        linha
+    );
+
 
     /*
-       Exemplo de linha recebida: "23.6,62.4,730"
-       23.6 = temperatura
-       62.4 = umidade
-       730  = luminosidade
+        O Arduino deve enviar:
+
+        temperatura,umidade,luminosidade
+
+        Exemplo:
+
+        25.4,62.5,480
     */
 
-    // Separa por vírgula e limpa caracteres ocultos como \r e espaços em branco
-    const dados = linha.split(",").map(item => item.trim());
 
+    const dados =
+        linha
+            .split(",")
+            .map(item => item.trim());
+
+
+    // Precisa ter os 3 valores
     if (dados.length !== 3) {
+
+        console.warn(
+            "Formato inválido:",
+            linha
+        );
+
         return;
+
     }
 
-    const temperatura = parseFloat(dados[0]);
-    const umidade = parseFloat(dados[1]);
-    const luminosidade = parseInt(dados[2], 10);
 
-    // Validação dos números
+    const temperatura =
+        parseFloat(dados[0]);
+
+
+    const umidade =
+        parseFloat(dados[1]);
+
+
+    const luminosidade =
+        parseInt(
+            dados[2],
+            10
+        );
+
+
+    // Verifica se os valores são válidos
     if (
+
         Number.isNaN(temperatura) ||
+
         Number.isNaN(umidade) ||
+
         Number.isNaN(luminosidade)
+
     ) {
-        console.warn("Valor inválido recebido:", dados);
+
+        console.warn(
+            "Valores inválidos:",
+            dados
+        );
+
         return;
+
     }
 
-    // Atribui às variáveis globais
-    temperaturaAtual = temperatura;
-    umidadeAtual = umidade;
-    luminosidadeAtual = luminosidade;
 
-    // Atualiza a tela e os alertas!
+    // Salva os valores
+    temperaturaAtual =
+        temperatura;
+
+
+    umidadeAtual =
+        umidade;
+
+
+    luminosidadeAtual =
+        luminosidade;
+
+
+    console.log(
+        "Temperatura:",
+        temperaturaAtual
+    );
+
+
+    console.log(
+        "Umidade:",
+        umidadeAtual
+    );
+
+
+    console.log(
+        "Luminosidade:",
+        luminosidadeAtual
+    );
+
+
+    // Atualiza a tela
     atualizarInterface();
+
+
+    // Verifica os alertas
     verificarAlertas();
+
 }
 
 
-// ================================
+// ==================================================
 // ATUALIZAR INTERFACE
-// ================================
+// ==================================================
 
 function atualizarInterface() {
+
+
+    // ------------------------------
+    // DASHBOARD
+    // ------------------------------
 
     if (temperaturaElemento) {
 
         temperaturaElemento.textContent =
-            temperaturaAtual.toFixed(1);
+            temperaturaAtual !== null
+                ? temperaturaAtual.toFixed(1)
+                : "--";
 
     }
 
@@ -301,7 +528,9 @@ function atualizarInterface() {
     if (umidadeElemento) {
 
         umidadeElemento.textContent =
-            umidadeAtual.toFixed(1);
+            umidadeAtual !== null
+                ? umidadeAtual.toFixed(1)
+                : "--";
 
     }
 
@@ -309,7 +538,76 @@ function atualizarInterface() {
     if (luminosidadeElemento) {
 
         luminosidadeElemento.textContent =
-            luminosidadeAtual;
+            luminosidadeAtual !== null
+                ? luminosidadeAtual
+                : "--";
+
+    }
+
+
+    // ------------------------------
+    // MONITORAMENTO
+    // ------------------------------
+
+    const temperaturaMonitoramento =
+        document.getElementById(
+            "temperaturaMonitoramento"
+        );
+
+
+    const umidadeMonitoramento =
+        document.getElementById(
+            "umidadeMonitoramento"
+        );
+
+
+    const luminosidadeMonitoramento =
+        document.getElementById(
+            "luminosidadeMonitoramento"
+        );
+
+
+    if (temperaturaMonitoramento) {
+
+        temperaturaMonitoramento.textContent =
+            temperaturaAtual !== null
+                ? temperaturaAtual.toFixed(1)
+                : "--";
+
+    }
+
+
+    if (umidadeMonitoramento) {
+
+        umidadeMonitoramento.textContent =
+            umidadeAtual !== null
+                ? umidadeAtual.toFixed(1)
+                : "--";
+
+    }
+
+
+    if (luminosidadeMonitoramento) {
+
+        luminosidadeMonitoramento.textContent =
+            luminosidadeAtual !== null
+                ? luminosidadeAtual
+                : "--";
+
+    }
+
+
+    // Histórico
+    const historicoStatus =
+        document.getElementById(
+            "historicoStatus"
+        );
+
+
+    if (historicoStatus && temperaturaAtual !== null) {
+
+        historicoStatus.textContent =
+            "Recebendo dados";
 
     }
 
@@ -319,43 +617,63 @@ function atualizarInterface() {
 }
 
 
-// ================================
+// ==================================================
 // VERIFICAR ALERTAS
-// ================================
+// ==================================================
 
 function verificarAlertas() {
 
-    let alertas = [];
+    let novosAlertas = [];
 
 
-    if (temperaturaAtual > 28) {
+    // Temperatura
+    if (
+        temperaturaAtual !== null &&
+        temperaturaAtual > LIMITE_TEMPERATURA
+    ) {
 
-        alertas.push(
-            "Temperatura acima do limite"
+        novosAlertas.push(
+            `Temperatura acima do limite: ${temperaturaAtual.toFixed(1)} °C`
         );
 
     }
 
 
-    if (umidadeAtual > 70) {
+    // Umidade
+    if (
+        umidadeAtual !== null &&
+        umidadeAtual > LIMITE_UMIDADE
+    ) {
 
-        alertas.push(
-            "Umidade acima do limite"
+        novosAlertas.push(
+            `Umidade acima do limite: ${umidadeAtual.toFixed(1)}%`
         );
 
     }
 
 
-    if (luminosidadeAtual > 350) {
+    // Luminosidade
+    if (
+        luminosidadeAtual !== null &&
+        luminosidadeAtual > LIMITE_LUMINOSIDADE
+    ) {
 
-        alertas.push(
-            "Luminosidade acima do limite"
+        novosAlertas.push(
+            `Luminosidade acima do limite: ${luminosidadeAtual}`
         );
 
     }
 
 
-    if (alertas.length > 0) {
+    // Se houver alerta
+    if (novosAlertas.length > 0) {
+
+        novosAlertas.forEach(mensagem => {
+
+            registrarAlerta(mensagem);
+
+        });
+
 
         atualizarSituacao(true);
 
@@ -368,9 +686,66 @@ function verificarAlertas() {
 }
 
 
-// ================================
-// SITUAÇÃO DO AMBIENTE
-// ================================
+// ==================================================
+// REGISTRAR ALERTA
+// ==================================================
+
+function registrarAlerta(mensagem) {
+
+    /*
+       Evita registrar exatamente o mesmo
+       alerta várias vezes seguidas.
+    */
+
+    const ultimoAlerta =
+        alertas[alertas.length - 1];
+
+
+    if (
+        ultimoAlerta &&
+        ultimoAlerta.mensagem === mensagem
+    ) {
+
+        return;
+
+    }
+
+
+    const novoAlerta = {
+
+        mensagem: mensagem,
+
+        horario:
+            new Date().toLocaleTimeString(
+                "pt-BR"
+            )
+
+    };
+
+
+    alertas.push(
+        novoAlerta
+    );
+
+
+    quantidadeAlertas =
+        alertas.length;
+
+
+    salvarAlertas();
+
+
+    atualizarListaAlertas();
+
+
+    atualizarContadorAlertas();
+
+}
+
+
+// ==================================================
+// ATUALIZAR SITUAÇÃO
+// ==================================================
 
 function atualizarSituacao(alerta = false) {
 
@@ -398,8 +773,62 @@ function atualizarSituacao(alerta = false) {
         );
 
 
+    const dashboardDescription =
+        document.getElementById(
+            "dashboardDescription"
+        );
+
+
     if (!status || !titulo) {
+
         return;
+
+    }
+
+
+    // Ainda não recebeu dados
+    if (
+        temperaturaAtual === null &&
+        umidadeAtual === null &&
+        luminosidadeAtual === null
+    ) {
+
+        status.classList.remove(
+            "alert"
+        );
+
+
+        status.classList.add(
+            "normal"
+        );
+
+
+        titulo.textContent =
+            "Aguardando dados";
+
+
+        descricao.textContent =
+            "Conecte o Arduino para receber as leituras dos sensores.";
+
+
+        if (situacao) {
+
+            situacao.textContent =
+                "Aguardando dados";
+
+        }
+
+
+        if (dashboardDescription) {
+
+            dashboardDescription.textContent =
+                "Os dados dos sensores aparecerão aqui após a conexão com o Arduino.";
+
+        }
+
+
+        return;
+
     }
 
 
@@ -430,6 +859,14 @@ function atualizarSituacao(alerta = false) {
 
         }
 
+
+        if (dashboardDescription) {
+
+            dashboardDescription.textContent =
+                "Há condições do ambiente que precisam de atenção.";
+
+        }
+
     } else {
 
         status.classList.remove(
@@ -457,14 +894,272 @@ function atualizarSituacao(alerta = false) {
 
         }
 
+
+        if (dashboardDescription) {
+
+            dashboardDescription.textContent =
+                "Temperatura, umidade e luminosidade estão dentro dos limites.";
+
+        }
+
     }
 
 }
 
 
-// ================================
+// ==================================================
+// ATUALIZAR CONTADOR DE ALERTAS
+// ==================================================
+
+function atualizarContadorAlertas() {
+
+    quantidadeAlertas =
+        alertas.length;
+
+
+    const contador =
+        document.getElementById(
+            "alertCount"
+        );
+
+
+    const total =
+        document.getElementById(
+            "totalAlerts"
+        );
+
+
+    const mensagem =
+        document.getElementById(
+            "alertMessage"
+        );
+
+
+    const resumo =
+        document.getElementById(
+            "alertSummaryMessage"
+        );
+
+
+    if (contador) {
+
+        contador.textContent =
+            quantidadeAlertas;
+
+    }
+
+
+    if (total) {
+
+        total.textContent =
+            quantidadeAlertas;
+
+    }
+
+
+    if (quantidadeAlertas === 0) {
+
+        if (mensagem) {
+
+            mensagem.textContent =
+                "Nenhum alerta registrado.";
+
+        }
+
+
+        if (resumo) {
+
+            resumo.textContent =
+                "Nenhum alerta registrado.";
+
+        }
+
+    } else {
+
+        if (mensagem) {
+
+            mensagem.textContent =
+                `${quantidadeAlertas} alerta(s) registrado(s).`;
+
+        }
+
+
+        if (resumo) {
+
+            resumo.textContent =
+                `${quantidadeAlertas} alerta(s) registrado(s).`;
+
+        }
+
+    }
+
+}
+
+
+// ==================================================
+// MOSTRAR ALERTAS
+// ==================================================
+
+function atualizarListaAlertas() {
+
+    const lista =
+        document.getElementById(
+            "alertsList"
+        );
+
+
+    if (!lista) {
+
+        return;
+
+    }
+
+
+    if (alertas.length === 0) {
+
+        lista.innerHTML = `
+
+            <div class="empty-alerts">
+
+                <div>✓</div>
+
+                <strong>
+                    Nenhum alerta registrado
+                </strong>
+
+                <p>
+                    Quando temperatura, umidade ou luminosidade ultrapassarem o limite, o alerta aparecerá aqui.
+                </p>
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    lista.innerHTML = "";
+
+
+    alertas.forEach(alerta => {
+
+        const item =
+            document.createElement(
+                "div"
+            );
+
+
+        item.className =
+            "alert-item";
+
+
+        item.innerHTML = `
+
+            <div class="alert-icon">
+                ⚠
+            </div>
+
+            <div class="alert-content">
+
+                <strong>
+                    ${alerta.mensagem}
+                </strong>
+
+                <p>
+                    Registrado às ${alerta.horario}
+                </p>
+
+            </div>
+
+        `;
+
+
+        lista.appendChild(
+            item
+        );
+
+    });
+
+}
+
+
+// ==================================================
+// SALVAR ALERTAS
+// ==================================================
+
+function salvarAlertas() {
+
+    localStorage.setItem(
+        "smartclass_alertas",
+        JSON.stringify(alertas)
+    );
+
+}
+
+
+// ==================================================
+// CARREGAR ALERTAS
+// ==================================================
+
+function carregarAlertas() {
+
+    const dados =
+        localStorage.getItem(
+            "smartclass_alertas"
+        );
+
+
+    if (!dados) {
+
+        alertas = [];
+
+        quantidadeAlertas = 0;
+
+        atualizarListaAlertas();
+
+        atualizarContadorAlertas();
+
+        return;
+
+    }
+
+
+    try {
+
+        alertas =
+            JSON.parse(dados);
+
+
+        quantidadeAlertas =
+            alertas.length;
+
+
+        atualizarListaAlertas();
+
+        atualizarContadorAlertas();
+
+    } catch (erro) {
+
+        console.error(
+            "Erro ao carregar alertas:",
+            erro
+        );
+
+
+        alertas = [];
+
+        quantidadeAlertas = 0;
+
+    }
+
+}
+
+
+// ==================================================
 // LIMPAR ALERTAS
-// ================================
+// ==================================================
 
 const botaoLimpar =
     document.getElementById(
@@ -484,46 +1179,59 @@ if (botaoLimpar) {
 
 function limparAlertas() {
 
+    alertas = [];
+
     quantidadeAlertas = 0;
 
 
-    const total =
-        document.getElementById(
-            "totalAlerts"
-        );
+    localStorage.removeItem(
+        "smartclass_alertas"
+    );
 
 
-    const lista =
-        document.getElementById(
-            "alertsList"
-        );
+    atualizarListaAlertas();
+
+    atualizarContadorAlertas();
 
 
-    if (total) {
+    // Se o ambiente estiver normal,
+    // mantém a situação correta.
+    verificarAlertas();
 
-        total.textContent = "0";
-
-    }
+}
 
 
-    if (lista) {
+// ==================================================
+// DETECTAR DESCONEXÃO DO ARDUINO
+// ==================================================
 
-        lista.innerHTML = `
-            <div class="empty-alerts">
+if ("serial" in navigator) {
 
-                <div>✓</div>
+    navigator.serial.addEventListener(
+        "disconnect",
+        evento => {
 
-                <strong>
-                    Nenhum alerta registrado
-                </strong>
+            console.warn(
+                "Arduino desconectado."
+            );
 
-                <p>
-                    Quando temperatura, umidade ou luminosidade ultrapassarem o limite, o alerta aparecerá aqui.
-                </p>
 
-            </div>
-        `;
+            if (
+                portaSerial &&
+                evento.target === portaSerial
+            ) {
 
-    }
+                portaSerial = null;
+
+                leitor = null;
+
+                atualizarStatusConexao(
+                    false
+                );
+
+            }
+
+        }
+    );
 
 }
