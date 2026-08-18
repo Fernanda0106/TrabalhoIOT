@@ -398,24 +398,33 @@ function processarDados(linha) {
 
 
     /*
-        O Arduino deve enviar:
+        O Arduino envia:
 
-        temperatura,umidade,luminosidade
-
-        Exemplo:
-
-        25.4,62.5,480
+        Luminosidade: 810 | Umidade: 82.5% | Temp: 26.0 °C | Sensação: 27.8 °C
     */
 
 
-    const dados =
-        linha
-            .split(",")
-            .map(item => item.trim());
+    // Extrai a luminosidade
+    const luminosidadeMatch =
+        linha.match(/Luminosidade:\s*([\d.]+)/i);
 
 
-    // Precisa ter os 3 valores
-    if (dados.length !== 3) {
+    // Extrai a umidade
+    const umidadeMatch =
+        linha.match(/Umidade:\s*([\d.]+)%/i);
+
+
+    // Extrai a temperatura
+    const temperaturaMatch =
+        linha.match(/Temp:\s*([\d.]+)\s*°C/i);
+
+
+    // Verifica se encontrou os três valores
+    if (
+        !luminosidadeMatch ||
+        !umidadeMatch ||
+        !temperaturaMatch
+    ) {
 
         console.warn(
             "Formato inválido:",
@@ -427,35 +436,40 @@ function processarDados(linha) {
     }
 
 
-    const temperatura =
-        parseFloat(dados[0]);
+    // Converte os valores
+    const luminosidade =
+        parseInt(
+            luminosidadeMatch[1],
+            10
+        );
 
 
     const umidade =
-        parseFloat(dados[1]);
+        parseFloat(
+            umidadeMatch[1]
+        );
 
 
-    const luminosidade =
-        parseInt(
-            dados[2],
-            10
+    const temperatura =
+        parseFloat(
+            temperaturaMatch[1]
         );
 
 
     // Verifica se os valores são válidos
     if (
-
         Number.isNaN(temperatura) ||
-
         Number.isNaN(umidade) ||
-
         Number.isNaN(luminosidade)
-
     ) {
 
         console.warn(
             "Valores inválidos:",
-            dados
+            {
+                temperatura,
+                umidade,
+                luminosidade
+            }
         );
 
         return;
@@ -502,8 +516,6 @@ function processarDados(linha) {
     verificarAlertas();
 
 }
-
-
 // ==================================================
 // ATUALIZAR INTERFACE
 // ==================================================
